@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Kumon DII Vocabulary Flashcards</title>
+<style>
+  :root {
+    --bg: #f6f4fb;
+    --panel: #ffffff;
+    --ink: #252238;
+    --muted: #6f6a82;
+    --accent: #6d5bd0;
+    --accent2: #ede9ff;
+    --good: #18864b;
+    --shadow: 0 14px 35px rgba(55, 42, 105, .12);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    background: linear-gradient(180deg, #f9f7ff, var(--bg));
+    color: var(--ink);
+    min-height: 100vh;
+  }
+  .wrap {
+    width: min(760px, 94vw);
+    margin: 0 auto;
+    padding: 24px 0 40px;
+  }
+  h1 {
+    margin: 0 0 6px;
+    font-size: clamp(26px, 5vw, 38px);
+    text-align: center;
+  }
+  .subtitle {
+    text-align: center;
+    color: var(--muted);
+    margin-bottom: 20px;
+  }
+  .toolbar {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  select, button {
+    border: 0;
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-size: 16px;
+  }
+  select {
+    background: var(--panel);
+    color: var(--ink);
+    box-shadow: var(--shadow);
+  }
+  button {
+    cursor: pointer;
+    background: var(--accent);
+    color: white;
+    font-weight: 700;
+  }
+  button.secondary {
+    background: var(--accent2);
+    color: var(--accent);
+  }
+  .progress {
+    display: flex;
+    justify-content: space-between;
+    color: var(--muted);
+    font-size: 14px;
+    margin: 8px 2px 12px;
+  }
+  .card-wrap { perspective: 1200px; }
+  .card {
+    position: relative;
+    min-height: 360px;
+    width: 100%;
+    transform-style: preserve-3d;
+    transition: transform .45s ease;
+    cursor: pointer;
+  }
+  .card.flipped { transform: rotateY(180deg); }
+  .face {
+    position: absolute;
+    inset: 0;
+    border-radius: 24px;
+    background: var(--panel);
+    box-shadow: var(--shadow);
+    padding: 34px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    text-align: center;
+  }
+  .back {
+    transform: rotateY(180deg);
+    background: linear-gradient(160deg, #ffffff, #f1edff);
+  }
+  .label {
+    position: absolute;
+    top: 20px;
+    left: 22px;
+    color: var(--accent);
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+  .prompt {
+    font-size: clamp(28px, 5vw, 42px);
+    font-weight: 800;
+    line-height: 1.22;
+    max-width: 620px;
+  }
+  .word {
+    font-size: clamp(36px, 8vw, 60px);
+    font-weight: 900;
+    color: var(--accent);
+    line-height: 1.1;
+    word-break: break-word;
+  }
+  .hint {
+    margin-top: 20px;
+    color: var(--muted);
+    font-size: 15px;
+  }
+  .controls {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr 1fr;
+    gap: 10px;
+    margin-top: 16px;
+  }
+  .controls button { min-height: 52px; }
+  .study-note {
+    margin-top: 18px;
+    background: white;
+    box-shadow: var(--shadow);
+    border-radius: 16px;
+    padding: 14px 16px;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.45;
+  }
+  @media (max-width: 560px) {
+    .wrap { padding-top: 16px; }
+    .toolbar { grid-template-columns: 1fr 1fr; }
+    .toolbar select { grid-column: 1 / -1; }
+    .face { padding: 26px 20px; min-height: 330px; }
+    .card { min-height: 330px; }
+    .controls { grid-template-columns: 1fr 1fr; }
+    .controls button:nth-child(2) { grid-column: 1 / -1; grid-row: 1; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>DII Vocabulary Review 2</h1>
+  <div class="subtitle">Read the clue, say the answer, then tap the card to check.</div>
+
+  <div class="toolbar">
+    <select id="setSelect" aria-label="Choose worksheet set">
+      <option value="all">All 168 words</option>
+      <option value="181A">DII 181A</option>
+      <option value="181B">DII 181B</option>
+      <option value="182A">DII 182A</option>
+      <option value="182B">DII 182B</option>
+      <option value="183A">DII 183A</option>
+      <option value="183B">DII 183B</option>
+      <option value="184A">DII 184A</option>
+      <option value="184B">DII 184B</option>
+      <option value="185A">DII 185A</option>
+      <option value="185B">DII 185B</option>
+      <option value="189A">DII 189A</option>
+      <option value="189B">DII 189B</option>
+      <option value="190A">DII 190A</option>
+      <option value="190B">DII 190B</option>
+    </select>
+    <button class="secondary" id="shuffleBtn">Shuffle</button>
+    <button class="secondary" id="restartBtn">Restart</button>
+  </div>
+
+  <div class="progress">
+    <span id="setName"></span>
+    <span id="counter"></span>
+  </div>
+
+  <div class="card-wrap">
+    <div class="card" id="card" tabindex="0" role="button" aria-label="Flashcard. Tap to reveal answer.">
+      <div class="face front">
+        <div class="label" id="frontLabel"></div>
+        <div class="prompt" id="clue"></div>
+        <div class="hint">Tap the card to reveal the word</div>
+      </div>
+      <div class="face back">
+        <div class="label" id="backLabel"></div>
+        <div class="word" id="answer"></div>
+        <div class="hint">Tap again to see the clue</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="secondary" id="prevBtn">← Previous</button>
+    <button id="flipBtn">Show Answer</button>
+    <button class="secondary" id="nextBtn">Next →</button>
+  </div>
+
+  <div class="study-note">
+    <strong>Easy study routine:</strong> Have her say the answer before flipping. If she misses it, say the word out loud once, flip back, and try the same card again later. Start with one 12-card worksheet set instead of all 168.
+  </div>
+</div>
+
+<script>
+const cards = [
+
+  {set:"181A", word:"briskly", clue:"Quickly."},
+  {set:"181A", word:"lopsided", clue:"Larger or heavier on one side than the other."},
+  {set:"181A", word:"annoy", clue:"To make someone somewhat angry."},
+  {set:"181A", word:"leukemia", clue:"A serious disease that affects the blood cells."},
+  {set:"181A", word:"Red Cross", clue:"An international organization that cares for sick and wounded people."},
+  {set:"181A", word:"atom bomb", clue:"A bomb that uses atomic energy and radiation."},
+  {set:"181A", word:"omen", clue:"A sign of what is going to happen."},
+  {set:"181A", word:"survivor", clue:"Someone who continues to live after a tragedy or accident."},
+  {set:"181A", word:"radiation", clue:"Energy in the form of harmful rays, such as from an atom bomb."},
+  {set:"181A", word:"craft", clue:"A kind of work that requires skill."},
+  {set:"181A", word:"miserable", clue:"Very unhappy."},
+  {set:"181A", word:"origami", clue:"The Japanese art of paper folding."},
+
+  {set:"181B", word:"mischief", clue:"A way of behaving that causes trouble."},
+  {set:"181B", word:"trudge", clue:"To walk slowly and with heavy steps."},
+  {set:"181B", word:"Czar", clue:"The king of Russia until the Revolution of 1917."},
+  {set:"181B", word:"flask", clue:"A bottle with a narrow neck."},
+  {set:"181B", word:"instantly", clue:"Happening without delay."},
+  {set:"181B", word:"parasol", clue:"A lightweight umbrella that protects the user from the sun."},
+  {set:"181B", word:"mark", clue:"A point to aim at."},
+  {set:"181B", word:"stride", clue:"A long step."},
+  {set:"181B", word:"peasant", clue:"A poor farmer who lives and works on a small portion of land."},
+  {set:"181B", word:"Hiroshima", clue:"A city in Japan that was destroyed by an atom bomb."},
+  {set:"181B", word:"ancient", clue:"Belonging to times long past."},
+  {set:"181B", word:"tiller", clue:"A handle used to steer a boat."},
+
+  {set:"182A", word:"Reconstruction", clue:"A program for rebuilding the South after the U.S. Civil War."},
+  {set:"182A", word:"people", clue:"A race or nation."},
+  {set:"182A", word:"decent", clue:"Good enough."},
+  {set:"182A", word:"Civil War", clue:"The war fought between the U.S. North and South from 1861 to 1865."},
+  {set:"182A", word:"slavery", clue:"A system in which people are owned by other people as slaves."},
+  {set:"182A", word:"sacred", clue:"Holy."},
+  {set:"182A", word:"highroad", clue:"A main route."},
+  {set:"182A", word:"depression", clue:"A time when business is very slow and jobs are scarce."},
+  {set:"182A", word:"hatchet", clue:"A small ax with a handle."},
+  {set:"182A", word:"furnace", clue:"An enclosed space for a very hot fire."},
+  {set:"182A", word:"fortune", clue:"Riches or destiny."},
+  {set:"182A", word:"ancestor", clue:"Someone from whom you are a descendant."},
+
+  {set:"182B", word:"Congress", clue:"The branch of the U.S. government that makes laws."},
+  {set:"182B", word:"late", clue:"No longer alive, especially having recently died."},
+  {set:"182B", word:"Great Depression", clue:"A major economic depression that lasted from 1929 to about 1940."},
+  {set:"182B", word:"pneumonia", clue:"A serious disease that affects the lungs."},
+  {set:"182B", word:"falter", clue:"To stumble."},
+  {set:"182B", word:"irritable", clue:"Grumpy."},
+  {set:"182B", word:"feisty", clue:"Tough, lively, or full of spirit."},
+  {set:"182B", word:"rascal", clue:"A badly behaved person."},
+  {set:"182B", word:"limp", clue:"Not stiff or firm."},
+  {set:"182B", word:"wretched", clue:"Very bad."},
+  {set:"182B", word:"washcloth", clue:"A small cloth for washing the face or body."},
+  {set:"182B", word:"hearthstones", clue:"The stones or bricks of a fireplace."},
+
+  {set:"183A", word:"prairie", clue:"A treeless plain of tall grasses and flowering plants."},
+  {set:"183A", word:"troublesome", clue:"Causing trouble."},
+  {set:"183A", word:"tremble", clue:"To shake from fear."},
+  {set:"183A", word:"horrid", clue:"Very unpleasant."},
+  {set:"183A", word:"slab", clue:"A flat, broad, thick piece of solid material."},
+  {set:"183A", word:"murmur", clue:"To make a soft, steady sound."},
+  {set:"183A", word:"energetic", clue:"Lively and active."},
+  {set:"183A", word:"generation", clue:"All the people born in or about the same time."},
+  {set:"183A", word:"handout", clue:"Food, money, or clothing given to someone."},
+  {set:"183A", word:"insult", clue:"Something said or done that is very rude."},
+  {set:"183A", word:"zenith", clue:"The point in the sky directly overhead."},
+  {set:"183A", word:"fiery", clue:"Like fire."},
+
+  {set:"183B", word:"suave", clue:"Smooth."},
+  {set:"183B", word:"cinders", clue:"Pieces of blackened material left after something has burned."},
+  {set:"183B", word:"overcast", clue:"Covered with clouds."},
+  {set:"183B", word:"advertisement", clue:"A paid announcement."},
+  {set:"183B", word:"terrace", clue:"A flat piece of land that is cut into a hillside."},
+  {set:"183B", word:"toll", clue:"The sound of a bell."},
+  {set:"183B", word:"mountaintop", clue:"The top of a mountain."},
+  {set:"183B", word:"yield", clue:"To give up."},
+  {set:"183B", word:"girdle", clue:"A piece of clothing that wraps around the waist."},
+  {set:"183B", word:"survive", clue:"To continue to live."},
+  {set:"183B", word:"knoll", clue:"A small, round hill."},
+  {set:"183B", word:"tsunami", clue:"A huge sea wave."},
+
+  {set:"184A", word:"preferable", clue:"Better or more desirable."},
+  {set:"184A", word:"emphatic", clue:"Spoken or done in a strong, forceful way."},
+  {set:"184A", word:"venture", clue:"To do something that involves risk or uncertainty."},
+  {set:"184A", word:"ideal", clue:"A perfect example or standard."},
+  {set:"184A", word:"list", clue:"To lean or tilt to one side."},
+  {set:"184A", word:"lumber", clue:"To move slowly and awkwardly."},
+  {set:"184A", word:"curt", clue:"Rudely brief when speaking."},
+  {set:"184A", word:"emotion", clue:"A strong feeling, such as joy, anger, or fear."},
+  {set:"184A", word:"agreeable", clue:"Pleasant or acceptable."},
+  {set:"184A", word:"imposition", clue:"Something that causes inconvenience or bother."},
+  {set:"184A", word:"lackadaisical", clue:"Showing little interest, energy, or effort."},
+  {set:"184A", word:"earnest", clue:"Serious and sincere in attitude."},
+
+  {set:"184B", word:"interruption", clue:"Something that stops an activity for a time."},
+  {set:"184B", word:"tremulously", clue:"In a shaking or trembling way."},
+  {set:"184B", word:"clinic", clue:"A place people go for medical care."},
+  {set:"184B", word:"operation", clue:"A procedure done by a surgeon to repair or treat the body."},
+  {set:"184B", word:"anesthetic", clue:"Medicine used to prevent pain during a procedure."},
+  {set:"184B", word:"transportation", clue:"The movement of people or goods from place to place."},
+  {set:"184B", word:"realize", clue:"To become aware of something or understand it."},
+  {set:"184B", word:"calm", clue:"Still and peaceful; not disturbed by wind or strong movement."},
+  {set:"184B", word:"current", clue:"Water or air flowing in a particular direction."},
+  {set:"184B", word:"income", clue:"Money a person earns or receives."},
+  {set:"184B", word:"situation", clue:"The set of conditions or circumstances around something."},
+  {set:"184B", word:"soar", clue:"To rise or fly high into the air."},
+
+  {set:"185A", word:"function", clue:"To work or operate properly."},
+  {set:"185A", word:"absorb", clue:"To soak up or take something in gradually."},
+  {set:"185A", word:"depth", clue:"The distance from the top surface down to the bottom."},
+  {set:"185A", word:"familiar", clue:"Well known or easy to recognize."},
+  {set:"185A", word:"ceremony", clue:"A formal or special act for an important occasion."},
+  {set:"185A", word:"symbolic", clue:"Using one thing to stand for or represent another."},
+  {set:"185A", word:"folklore", clue:"Traditional stories and beliefs passed down among people."},
+  {set:"185A", word:"cautious", clue:"Careful to avoid danger or mistakes."},
+  {set:"185A", word:"identify", clue:"To recognize and name someone or something."},
+  {set:"185A", word:"curious", clue:"Wanting to know or learn more about something."},
+  {set:"185A", word:"engulf", clue:"To completely surround or cover."},
+  {set:"185A", word:"ward", clue:"A section or area of a hospital."},
+
+  {set:"185B", word:"curse", clue:"Something believed to cause serious harm or trouble."},
+  {set:"185B", word:"suspicious", clue:"Not trusting; thinking something may be wrong."},
+  {set:"185B", word:"hem", clue:"The finished lower edge of a skirt, dress, or other clothing."},
+  {set:"185B", word:"clumsy", clue:"Awkward in movement or handling things."},
+  {set:"185B", word:"fantastic", clue:"Extraordinary, strange, or wonderful."},
+  {set:"185B", word:"bewilder", clue:"To confuse someone completely."},
+  {set:"185B", word:"vigorously", clue:"With a lot of strength and energy."},
+  {set:"185B", word:"streetcar", clue:"A rail vehicle used to carry people along city streets."},
+  {set:"185B", word:"community", clue:"A group of people living in the same place or sharing something in common."},
+  {set:"185B", word:"unsuccessful", clue:"Not achieving the result or success that was hoped for."},
+  {set:"185B", word:"disapprovingly", clue:"In a way that shows a negative opinion or dislike."},
+  {set:"185B", word:"Norwegian", clue:"The language of Norway, or something related to Norway."},
+
+  {set:"189A", word:"deter", clue:"To prevent or discourage someone from doing something."},
+  {set:"189A", word:"lingo", clue:"Special words used for a particular activity or subject."},
+  {set:"189A", word:"funeral", clue:"A ceremony held when a person has died."},
+  {set:"189A", word:"absolute", clue:"Complete or perfect."},
+  {set:"189A", word:"turbulent", clue:"Wildly active, forceful, or greatly disturbed."},
+  {set:"189A", word:"sense", clue:"A feeling or impression about something."},
+  {set:"189A", word:"dump", clue:"To drop or go down suddenly."},
+  {set:"189A", word:"perspective", clue:"A particular point of view or way of seeing something."},
+  {set:"189A", word:"spectator", clue:"Someone who watches an event without taking part."},
+  {set:"189A", word:"dedicate", clue:"To set something apart for a special purpose."},
+  {set:"189A", word:"doubtful", clue:"Not certain or unsure."},
+  {set:"189A", word:"distraction", clue:"Something that draws your attention away from something else."},
+
+  {set:"189B", word:"gangplank", clue:"A movable bridge used to get on or off a docked ship."},
+  {set:"189B", word:"upholstered", clue:"Covered with soft material or padding, as with furniture."},
+  {set:"189B", word:"tinder", clue:"Dry material that catches fire easily."},
+  {set:"189B", word:"Catskill Mountains", clue:"A low mountain range about 120 miles from New York City."},
+  {set:"189B", word:"Singapore", clue:"An island country in Southeast Asia with a major port."},
+  {set:"189B", word:"grub", clue:"A young insect that looks like a short, fat worm."},
+  {set:"189B", word:"flint", clue:"A very hard stone that can make a spark when struck against steel."},
+  {set:"189B", word:"boulder", clue:"A large, rounded rock."},
+  {set:"189B", word:"internal organs", clue:"Organs inside the body, such as the stomach."},
+  {set:"189B", word:"wildlife", clue:"Wild animals and plants."},
+  {set:"189B", word:"frantically", clue:"With great fear, excitement, or hurried energy."},
+  {set:"189B", word:"wilderness", clue:"An area of natural land that is mostly untouched by people."},
+
+  {set:"190A", word:"athletic", clue:"Strong, active, and physically fit."},
+  {set:"190A", word:"limb", clue:"A large branch of a tree."},
+  {set:"190A", word:"departure", clue:"The act of leaving."},
+  {set:"190A", word:"literature", clue:"Written works such as stories, poems, and plays."},
+  {set:"190A", word:"infest", clue:"To spread in great numbers and cause trouble or damage."},
+  {set:"190A", word:"congregate", clue:"To gather together in a group."},
+  {set:"190A", word:"perceptively", clue:"In a wise and understanding way."},
+  {set:"190A", word:"edification", clue:"The act of teaching, instructing, or improving someone."},
+  {set:"190A", word:"postpone", clue:"To put something off until a later time."},
+  {set:"190A", word:"ponder", clue:"To think deeply about something."},
+  {set:"190A", word:"inhabit", clue:"To live in a place."},
+  {set:"190A", word:"preamble", clue:"An introduction or hint about what is to come."},
+
+  {set:"190B", word:"desert", clue:"Land with very little water or plant life."},
+  {set:"190B", word:"hemlock", clue:"An evergreen tree with flat needles."},
+  {set:"190B", word:"emphatic", clue:"Using language that is strong and forceful."},
+  {set:"190B", word:"climate", clue:"The usual weather of a place over a long period of time."},
+  {set:"190B", word:"tedious", clue:"Boring, especially because something takes a long time."},
+  {set:"190B", word:"resemble", clue:"To look like or be similar to something."},
+  {set:"190B", word:"reserve", clue:"Caution or restraint in your words or actions."},
+  {set:"190B", word:"humid", clue:"Very damp and usually hot."},
+  {set:"190B", word:"considerable", clue:"Great or large in amount, size, or importance."},
+  {set:"190B", word:"catastrophe", clue:"A terrible event that causes great harm or trouble."},
+  {set:"190B", word:"moralist", clue:"Someone who tells others what they believe is right and wrong behavior."},
+  {set:"190B", word:"asteroid", clue:"One of the many small rocky objects that orbit the sun."}
+];
+
+let deck = [...cards];
+let index = 0;
+let flipped = false;
+let currentSet = "all";
+
+const card = document.getElementById("card");
+const clue = document.getElementById("clue");
+const answer = document.getElementById("answer");
+const counter = document.getElementById("counter");
+const setName = document.getElementById("setName");
+const frontLabel = document.getElementById("frontLabel");
+const backLabel = document.getElementById("backLabel");
+const flipBtn = document.getElementById("flipBtn");
+const setSelect = document.getElementById("setSelect");
+
+function buildDeck() {
+  deck = currentSet === "all" ? [...cards] : cards.filter(c => c.set === currentSet);
+  index = 0;
+  flipped = false;
+  render();
+}
+
+function render() {
+  if (!deck.length) return;
+  const item = deck[index];
+  clue.textContent = item.clue;
+  answer.textContent = item.word;
+  frontLabel.textContent = `DII ${item.set}`;
+  backLabel.textContent = `DII ${item.set}`;
+  counter.textContent = `${index + 1} of ${deck.length}`;
+  setName.textContent = currentSet === "all" ? "All sets" : `DII ${currentSet}`;
+  card.classList.toggle("flipped", flipped);
+  flipBtn.textContent = flipped ? "Show Clue" : "Show Answer";
+}
+
+function flip() {
+  flipped = !flipped;
+  render();
+}
+
+function next() {
+  index = (index + 1) % deck.length;
+  flipped = false;
+  render();
+}
+
+function prev() {
+  index = (index - 1 + deck.length) % deck.length;
+  flipped = false;
+  render();
+}
+
+function shuffle() {
+  for (let i = deck.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [deck[i], deck[j]] = [deck[j], deck[i]];
+  }
+  index = 0;
+  flipped = false;
+  render();
+}
+
+card.addEventListener("click", flip);
+card.addEventListener("keydown", e => {
+  if (e.key === "Enter" || e.key === " ") {
+    e.preventDefault();
+    flip();
+  }
+});
+document.getElementById("flipBtn").addEventListener("click", flip);
+document.getElementById("nextBtn").addEventListener("click", next);
+document.getElementById("prevBtn").addEventListener("click", prev);
+document.getElementById("shuffleBtn").addEventListener("click", shuffle);
+document.getElementById("restartBtn").addEventListener("click", buildDeck);
+setSelect.addEventListener("change", e => {
+  currentSet = e.target.value;
+  buildDeck();
+});
+
+document.addEventListener("keydown", e => {
+  if (e.key === "ArrowRight") next();
+  if (e.key === "ArrowLeft") prev();
+});
+
+buildDeck();
+</script>
+</body>
+</html>
